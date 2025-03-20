@@ -2,6 +2,8 @@ What is Database Sharding
 
 Database sharding is process for storing large amount of data across multiple machines. In this process data is split into multiple chunks, called shards.
 
+REFER WIKI https://github.com/amitmohantiwari13/javalearning/wiki/Database-Sharding
+
 Range-based Sharding - Data is divided based on value ranges of a sharding key.
 
 Pros
