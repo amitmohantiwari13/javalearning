@@ -1,0 +1,47 @@
+What is Database Sharding
+
+Database sharding is process for storing large amount of data across multiple machines. In this process data is split into multiple chunks, called shards.
+
+Range-based Sharding - Data is divided based on value ranges of a sharding key.
+
+Pros
+1. Simple to implement and understand 
+2. Easy to query ranges of data.
+Cons :
+1. Risk of hotspots if most data falls into a particular range. 
+2. Uneven distribution over time.
+
+Hash-based Sharding - A hash function is applied to the sharding key and the result decides the shard.
+Pros
+1. Avoids hotspots. 
+2. Even distribution of data
+Cons
+1. Difficult to do range queries Re-sharding (adding/removing shards) is complex. 
+2. Data movement is costly when scaling.
+
+Geo-based Sharding (or Location-based) - Data is sharded based on geographic location.
+Pros
+1. Optimized latency. 
+2. Complies with data residency regulations (like GDPR).
+Cons
+1. Cross-region queries are slow and complex. 
+2. Balancing load can be tricky if regions have uneven traffic  
+  
+Feature-based (or Entity-based) Sharding - Different features or services use separate shards.
+Pros
+1. Decouples unrelated datasets. 
+2. Scales different services independently.
+Cons
+1. Complex queries that need to join data across shards can get messy. 
+2. Cross-feature transactions are slow
+
+Directory based sharding(Lookup table) - A mapping table keeps track of which data resides on which shard.
+Pros:
+1. Complete control over data placement. 
+2. Flexibility to move data easily.
+Cons:
+1. The directory can become a single point of failure. 
+2. Extra lookup step in every query.
+
+
+  
