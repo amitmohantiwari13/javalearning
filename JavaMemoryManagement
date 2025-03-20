@@ -1,0 +1,60 @@
+Java Memory Management is crucial aspect of JVM which ensures memory allocation, garbage collection and performance optimisation It has heap memory, stack memory and garbage collection mechanism.
+
+REFER WIKI https://github.com/amitmohantiwari13/javalearning/wiki/Java-Memory-Management
+
+Memory Area
+
+Heap Memory
+  The largest memory area which is used for dynamic memory allocation
+      Divided into regions
+         1. Young Generation
+         2. Eden space - New objects are created here
+         3. Survivour space - Objects survived in Garbage collection in Eden space is moved here
+         4. Metaspace - Introduced in Java 8+. stores class structures, method data, runtime constant pools, and annotations.static varibales and methods are loaded in metaspace. static variable and methods are loaded once per class and remains loaded until class is garbage collected.
+         5. PermGen - this is deprecated after Java 8 and replaced by Metaspace.
+
+Stack Memory
+   Stores local method calls, variables and reference to objects in heap.
+
+
+Garbage Collector
+   It is responsible for automatic memory reclaiming by removing unreachable objects.
+
+   Serial GC
+     1. Uses single threaded approach
+     2. Suitable for small applications (single-threaded or with a small heap).
+     3. Pause application execution while performing GC(Stop-the-world)
+     4. Enable GC option by setting up - -XX:+UseSerialGC
+
+   Prallel GC
+
+     1. Uses multiple threads to speed up GC.
+     2. Focuses on high throughput (reduces GC time but allows longer pauses).
+     3.  Pause application execution while performing GC(Stop-the-world)
+     4. Suitable for batch processing or high-throughput applications.
+     5. Enable GC option by setting up - -XX:+UseParallelGC
+
+G1 Garbage Collector (G1GC)
+
+     1. G1GC is low latency, region based garbage collector. It is default GC Java 9 onwards
+     2. Instead of fix continuous regions, GC divides the heap memory into multiple small regions.
+     3. It has Young Generation, PermGen, Humongous(For very large objects (larger than 50% of a region)) and unused(Free memory that JVM can allocate when needed.) regions. Heap is divided into 1MB to 32MB size each regions, depending on total heap size
+     4. Concurrent garbage collection reduces "Stop-The-World" (STW) pauses.
+     5. Automatically prioritizes GC on the most garbage-filled regions first (hence "Garbage First").
+     6. It is default Java 9 onwards but can enable explicitly using -XX:+UseG1GC
+
+      Important JVM options for G1GC tuning 
+      -XX:MaxGCPauseMillis= ( Target GC pause time (default: 200ms)) 
+      -XX:InitiatingHeapOccupancyPercent=. (When to trigger GC (default: 45% of heap). 
+      -XX:G1HeapRegionSize= (Region size (default: 1MB to 32MB, set automatically)) 
+      -XX:+G1UseAdaptiveIHOP (Dynamically adjust InitiatingHeapOccupancyPercent (default: enabled)) 
+      -XX:ConcGCThreads= Number of concurrent GC threads. -XX:ParallelGCThreads= Number of parallel GC threads.
+
+      ✅ Use G1GC if: 
+        ✔ Application has heap sizes larger than 4GB. 
+        ✔ You need predictable pause times (e.g., real-time apps, web servers). 
+        ✔ You are running Java 9+ (G1GC is default).
+      
+      ❌ Avoid G1GC if: 
+        ✖ Application has very small heap (<4GB) (use Parallel GC instead). 
+        ✖ You need maximum throughput (Parallel GC may be better).
