@@ -46,4 +46,15 @@ Cons:
 2. Extra lookup step in every query.
 
 
+How to choose the right sharding strategy:
+
+Workload: Is it read-heavy? Write-heavy? Range queries?
+
+Growth patterns: Will data grow evenly?
+
+Query patterns: Will you mostly fetch by ID or do complex joins?
+
+Scalability needs: How often will you add shards?
+
+Geography: Are there location constraints?
   
