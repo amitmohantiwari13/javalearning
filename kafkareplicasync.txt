@@ -1,0 +1,53 @@
+Write/Read is happening at Leader in Kafka. Kafka writes the data in partition logs
+
+Replica Synchronization
+Step 1 
+
+Each follower send fetch request to leader periodically to request data 
+The requests asks for new records starting from followers latest offset
+
+Step 2
+
+Leader responds with new records from the partition logs
+Followers append these new records in it local logs
+
+Step 3 
+
+Followers periodically send ACKs to leader for the confirmation of data replication.
+Followers should respond with in certain lag to the be considered in-sync. 
+Brokers Property replica.lag.time.max.ms defines lag time(default to 10 sec). If followers does not reply with in the mention time it is considered as out-of-sync.
+
+Kafka maintains In-Sync Replicas(ISR) set which includes 
+
+Leader
+Followers which responds with in the defined lag time
+kafka-topic.sh --describe --topic <<topic-name>> --bootstrap-server  <<server with port>>
+Response e.g. : 
+Topic :<<Topic name>> Partition : <<partition #>> Leader : 1 Replicas : 1,2,3 ISR : 1,2
+Here replica 3 is out-of-sync
+
+Replica Sync Mechanism
+Kafka uses high-watermark(HW)replication to track committed messages.
+
+Key Concepts :
+
+Log End Offset(LEO) : The latest offset stored in replica
+High Watermark(HW) : The highest offset acknowledged by all in-sync replicas 
+
+Mechanism of High-Watermark
+
+Leader advances the HW only when all ISR nodes confirm the replication
+Consumer only read up to HW to ensure consistency
+
+min.insync.replicas - This property specifies to allow write if there is minimum number of ISR count. 
+
+Example of enforcing strong replication for 3 nodes cluster 
+
+min.insync.replicas=3
+replica.lag.time.max.ms=10000
+
+Monitoring Replica synchronization
+Enable JMX monitoring, set below in kafka start up script
+
+KAFKA_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9999"
+Use JConsole or Prometheus to track ISR size and lag.
